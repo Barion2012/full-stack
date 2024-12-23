@@ -157,6 +157,9 @@ let common = {
             html('table', result.html);
         });
     },
+
+    logout: () => set_path('logout', _ =>  window.location.reload())
+
 }
 
 add_event(document, 'DOMContentLoaded', common.init);
