@@ -163,17 +163,3 @@ if (window.NodeList && !NodeList.prototype.forEach) {
         }
     };
 }
-
-function set_path(path, callback) {
-    let xhr = new XMLHttpRequest();
-    if (!xhr) return;
-
-    xhr.open('POST', '/call.php', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send(request_serialize({location:{dpt: path},data:{}}));
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState !== 4) return;
-        if (xhr.status === 200) callback();
-        xhr = null;
-    }
-}

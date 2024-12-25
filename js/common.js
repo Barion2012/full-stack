@@ -107,7 +107,9 @@ let common = {
                 remove_class('login_note', 'fade');
                 setTimeout(function() { add_class('login_note', 'fade'); }, 3000);
                 setTimeout(function() { html('login_note', ''); }, 3500);
-            } else window.location = window.location.href;
+            } else {
+                window.location.reload();
+            }
         });
     },
 
@@ -158,8 +160,63 @@ let common = {
         });
     },
 
-    logout: () => set_path('logout', _ =>  window.location.reload())
+    // users
+    user_edit_window(user_id, e) {
+        // actions
+        cancel_event(e);
+        common.menu_popup_hide_all('all');
+        // vars
+        let data = {user_id: user_id};
+        let location = {dpt: 'user', act: 'edit_window'};
+        // call
+        request({location: location, data: data}, (result) => {
+            common.modal_show(400, result.html);
+        });
+    },
 
+    user_edit_update(user_id = 0) {
+        // vars
+        let data = {
+            user_id: user_id,
+            plot_id: gv('plot_id'),
+            first_name: gv('first_name'),
+            last_name: gv('last_name'),
+            email: gv('email'),
+            phone: gv('phone'),
+            last_login: gv('last_login'),
+            offset: global.offset
+        };
+        let location = {dpt: 'user', act: 'edit_update'};
+        if (data.plot_id==='' || data.first_name===''||data.last_name===''||data.email===''|| data.phone==='') {
+            alert("Please fill in all fields");
+        }
+        else{
+            // call
+            request({location: location, data: data}, (result) => {
+                common.modal_hide();
+                html('table', result.html);
+                html('paginator', result.paginator);
+            });
+        }
+    },
+
+    user_remove(user_id, e) {
+        // actions
+        cancel_event(e);
+        common.menu_popup_hide_all('all');
+
+        if (confirm("Are you sure you want to remove the current record?"))
+        {
+            // vars
+            let data = {user_id: user_id};
+            let location = {dpt: 'user', act: 'remove'};
+            // call
+            request({location: location, data: data}, (result) => {
+                html('table', result.html);
+                html('paginator', result.paginator);
+            });
+        }
+    },
 }
 
 add_event(document, 'DOMContentLoaded', common.init);
